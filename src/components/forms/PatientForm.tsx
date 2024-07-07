@@ -5,12 +5,11 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import CustomFormField from "../CustomFormField";
+import SubmitButton from "../SubmitButton";
+import { useState } from "react";
+import { userFormValidation } from "@/lib/validation";
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
+
 
 export enum FormInputType {
   INPUT = "input",
@@ -23,14 +22,17 @@ export enum FormInputType {
 }
 
 const PatientForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const form = useForm<z.infer<typeof userFormValidation>>({
+    resolver: zodResolver(userFormValidation),
     defaultValues: {
-      username: "",
+      name: "",
+      email: "",
+      phone: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof userFormValidation>) {
     console.log(values);
   }
 
@@ -41,8 +43,8 @@ const PatientForm = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6 flex-1"
         >
-          <section className="mb-12 space-y-4">
-            <h1 className="header">Hi there 👋</h1>
+          <section className=" space-y-4">
+            {/* <h1 className="header">Hi there 👋</h1> */}
             <p className="text-dark-700">Schedule your first appointment</p>
           </section>
           <CustomFormField
@@ -66,11 +68,11 @@ const PatientForm = () => {
           <CustomFormField
             name="phone"
             label="Phone Number"
-            placeholder="12345-67890"
+            placeholder="(555) 1234-5678"
             fieldType={FormInputType.PHONE_INPUT}
             control={form.control}
           />
-          <Button type="submit">Submit</Button>
+          <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
         </form>
       </Form>
     </div>

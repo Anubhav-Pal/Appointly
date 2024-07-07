@@ -12,8 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Control } from "react-hook-form";
 import { FormInputType } from "./forms/PatientForm";
 import Image from "next/image";
-import PhoneInput from "react-phone-number-input/input";
 import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
 
 interface CustomProps {
   name: string;
@@ -29,6 +29,7 @@ interface CustomProps {
   fieldType: FormInputType;
 }
 
+// Render the specific type of field
 const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
   switch (props.fieldType) {
     case FormInputType.INPUT:
@@ -43,12 +44,12 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
               className="ml-2"
             />
           )}
-          <FormControl>
+          <FormControl className="h-full">
             <Input
               placeholder={props.placeholder}
               {...field}
               className="shad-input border-0"
-            ></Input>
+            />
           </FormControl>
         </div>
       );
@@ -67,21 +68,21 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
           <FormControl>
             <PhoneInput
               defaultCountry="IN"
-              placeholder={props.placeholder}
               international
               withCountryCallingCode
-              //   value={field.value as E164Number}
+              placeholder={props.placeholder}
+              value={field.value}
               onChange={field.onChange}
-              className="input-phone"
+              className="input-phone w-full "
             />
           </FormControl>
         </div>
       );
-
     default:
       break;
   }
 };
+
 const CustomFormField: React.FC<CustomProps> = (props) => {
   const { name, label, placeholder, iconSrc, iconAlt, fieldType, control } =
     props;
