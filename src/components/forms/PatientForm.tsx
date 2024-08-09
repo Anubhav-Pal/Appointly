@@ -9,6 +9,7 @@ import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import { userFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
+import { createUser } from "@/lib/actions/patient.actions";
 
 export enum FormInputType {
   INPUT = "input",
@@ -36,15 +37,16 @@ const PatientForm = () => {
     const { name, email, phone } = values;
     setLoading(true);
     try {
-      // const userData = {
-      //   name,
-      //   email,
-      //   phone,
-      // };
-      // const response = await createUser(userData);
-      // if (response) {
-      //   router.push(`/patients/${response.$id}/register`);
-      // }
+      const userData = {
+        name,
+        email,
+        phone,
+      };
+      console.log("new user data: ", userData);
+      const user = await createUser(userData);
+      if (user) {
+        router.push(`/patients/${user.$id}/register`);
+      }
     } catch (error) {
       console.log(error);
     }
