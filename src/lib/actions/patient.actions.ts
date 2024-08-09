@@ -2,12 +2,10 @@ import { ID, Query } from "node-appwrite";
 import { users } from "../appwrite.config";
 import { parseStringify } from "../utils";
 
+//create a new user
 export const createUser = async (user: CreateUserParams) => {
   try {
-    console.log("user to be created: ", user);
-
     const userID = ID.unique();
-    console.log("user id: ", userID);
     const newUser = await users.create(
       userID,
       user.email,
@@ -24,5 +22,15 @@ export const createUser = async (user: CreateUserParams) => {
       const documents = await users.list([Query.equal("email", [user.email])]);
       return documents?.users[0];
     }
+  }
+};
+
+//get a user from Appwrite
+export const getUser = async (userID: string) => {
+  try {
+    const user = await users.get(userID);
+    return parseStringify(user);
+  } catch (error: any) {
+    console.log("error fetching user: ", error);
   }
 };
