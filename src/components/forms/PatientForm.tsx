@@ -7,9 +7,16 @@ import { Form } from "@/components/ui/form";
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
-import { userFormValidation } from "@/lib/validation";
+import { UserFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions/patient.actions";
+// import {
+//   BUCKET_ID,
+//   DATABASE_ID,
+//   ENDPOINT,
+//   PATIENT_COLLECTION_ID,
+//   PROJECT_ID,
+// } from "@/lib/appwrite.config";
 
 export enum FormInputType {
   INPUT = "input",
@@ -22,10 +29,15 @@ export enum FormInputType {
 }
 
 const PatientForm = () => {
+  // console.log("Bucket ID: ", BUCKET_ID);
+  // console.log("Database ID: ", DATABASE_ID);
+  // console.log("Patient Collection ID: ", PATIENT_COLLECTION_ID);
+  // console.log("Project ID: ", PROJECT_ID);
+  // console.log("Endpoint: ", ENDPOINT);
   const router = useRouter();
   const [isLoading, setLoading] = useState<boolean>(false);
-  const form = useForm<z.infer<typeof userFormValidation>>({
-    resolver: zodResolver(userFormValidation),
+  const form = useForm<z.infer<typeof UserFormValidation>>({
+    resolver: zodResolver(UserFormValidation),
     defaultValues: {
       name: "",
       email: "",
@@ -33,7 +45,7 @@ const PatientForm = () => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof userFormValidation>) {
+  async function onSubmit(values: z.infer<typeof UserFormValidation>) {
     const { name, email, phone } = values;
     setLoading(true);
     try {
@@ -42,14 +54,19 @@ const PatientForm = () => {
         email,
         phone,
       };
+      console.log("user creds to be created: ", userData);
       const user = await createUser(userData);
-      if (user) {
+      if (user && user.$id) {
         router.push(`/patients/${user.$id}/register`);
+      } else {
+        throw new Error("User creation failed, no user ID returned.");
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error during user creation: ", error);
+      alert("Failed to create user. Please try again.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (

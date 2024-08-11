@@ -40,11 +40,9 @@ const RegisterForm: React.FC<Props> = ({ user }) => {
   });
 
   async function onSubmit(values: z.infer<typeof PatientFormValidation>) {
-    const { name, email, phone } = values;
     setLoading(true);
     try {
       let formData;
-
       //check whether we do have the files
       if (
         values.identificationDocument &&
@@ -65,7 +63,6 @@ const RegisterForm: React.FC<Props> = ({ user }) => {
           birthDate: new Date(values.birthDate),
           identificationDocument: formData,
         };
-        //@ts-ignore
         const patient = await registerPatient(patientData);
         if (patient) {
           router.push(`/patients/${user.$id}/new-appointment`);
@@ -91,6 +88,7 @@ const RegisterForm: React.FC<Props> = ({ user }) => {
             <p className="text-dark-700">Let us know more about yourself.</p>
           </section>
 
+          {/* Personal Information */}
           <section className=" space-y-6">
             <div className="mb-9 space-y-1">
               <h2 className="text-dark-700 sub-header">Personal Information</h2>
@@ -185,7 +183,7 @@ const RegisterForm: React.FC<Props> = ({ user }) => {
               name="emergencyContactNumber"
               label="Emergency Contact Number"
               placeholder="Guardian's number"
-              fieldType={FormInputType.INPUT}
+              fieldType={FormInputType.PHONE_INPUT}
               control={form.control}
             />
           </div>
@@ -212,6 +210,8 @@ const RegisterForm: React.FC<Props> = ({ user }) => {
               </SelectItem>
             ))}
           </CustomFormField>
+
+          {/* Medical Information */}
           <section className=" space-y-6">
             <div className="mb-9 space-y-1">
               <h2 className="text-dark-700 sub-header">Medical Information</h2>
@@ -267,6 +267,7 @@ const RegisterForm: React.FC<Props> = ({ user }) => {
             />
           </div>
 
+          {/* Identification and verification */}
           <section className=" space-y-6">
             <div className="mb-9 space-y-1">
               <h2 className="text-dark-700 sub-header">
@@ -306,6 +307,8 @@ const RegisterForm: React.FC<Props> = ({ user }) => {
               </FormControl>
             )}
           />
+
+          {/* Consent and privacy */}
           <section className=" space-y-6">
             <div className="mb-9 space-y-1">
               <h2 className="text-dark-700 sub-header">Consent and Privacy</h2>

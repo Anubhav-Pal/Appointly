@@ -23,13 +23,14 @@ export const createUser = async (user: CreateUserParams) => {
       undefined,
       user.name
     );
-    console.log({ newUser });
+    console.log("New user created: ", { newUser });
     return parseStringify(newUser);
   } catch (error: any) {
     console.log("error creating user: ", error);
     // check existing user
     if (error && error?.code == 409) {
       const documents = await users.list([Query.equal("email", [user.email])]);
+      console.log("already Existing user: ", documents?.users[0]);
       return documents?.users[0];
     }
   }
