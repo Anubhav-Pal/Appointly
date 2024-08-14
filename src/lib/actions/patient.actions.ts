@@ -17,6 +17,7 @@ const {
   DOCTOR_COLLECTION_ID,
   APPOINTMENT_COLLECTION_ID,
   NEXT_PUBLIC_BUCKET_ID,
+  NEXT_PUBLIC_DATABASE_ID,
   NEXT_PUBLIC_ENDPOINT,
 } = process.env;
 import { ID, Query } from "node-appwrite";
@@ -70,10 +71,6 @@ export const registerPatient = async ({
 }: RegisterUserParams) => {
   try {
     let file;
-    console.log(
-      "process env fron register: ",
-      process.env.PATIENT_COLLECTION_ID
-    );
     if (identificationDocument) {
       const inputFile = InputFile.fromBuffer(
         identificationDocument?.get("blobFile") as Blob,
@@ -87,7 +84,7 @@ export const registerPatient = async ({
     }
     // Create new patient document -> https://appwrite.io/docs/references/cloud/server-nodejs/databases#createDocument
     const newPatient = await databases.createDocument(
-      DATABASE_ID!,
+      NEXT_PUBLIC_DATABASE_ID!,
       PATIENT_COLLECTION_ID!,
       ID.unique(),
       {
