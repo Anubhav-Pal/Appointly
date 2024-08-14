@@ -22,7 +22,7 @@ import {
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
 import FileUploader from "./FileUploader";
-
+ 
 type Props = {
   user: User;
 };
