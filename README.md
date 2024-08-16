@@ -1,8 +1,8 @@
 <div align="center">
   <br />
-    <a href="https://youtu.be/lEflo_sc82g?feature=shared" target="_blank">
-      <img src="https://github.com/adrianhajdin/healthcare/assets/151519281/a7dd73b6-93de-484d-84e0-e7f4e299167b" alt="Project Banner">
-    </a>
+  
+  ![banner](https://github.com/user-attachments/assets/ea14bbc6-12f2-4821-b1af-4b467aecf337)
+  
   <br />
 
   <div>
