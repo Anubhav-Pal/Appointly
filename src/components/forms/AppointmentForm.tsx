@@ -28,8 +28,8 @@ type Props = {
   type: "create" | "cancel" | "schedule";
   userID: string;
   patientID: string;
-  appointment: Appointment;
-  setOpen: (open: boolean) => void;
+  appointment?: Appointment;
+  setOpen?: (open: boolean) => void;
 };
 const AppointmentForm: React.FC<Props> = ({
   type,
@@ -105,7 +105,7 @@ const AppointmentForm: React.FC<Props> = ({
       } else {
         const appointmentToUpdate = {
           userID,
-          appointmentId: appointment?.$id,
+          appointmentId: appointment?.$id!,
           appointment: {
             primaryPhysician: values?.primaryPhysician,
             schedule: new Date(values?.schedule),
