@@ -3,8 +3,8 @@ import Link from "next/link";
 import React from "react";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.actions";
 import { StatCard } from "@/components/StatCard";
-import DataTable from "@/components/table/DataTable";
-import columns from "@/components/table/Columns";
+import { DataTable } from "@/components/table/DataTable";
+import { columns } from "@/components/table/Columns";
 
 const Admin = async () => {
   const appointments = await getRecentAppointmentList();

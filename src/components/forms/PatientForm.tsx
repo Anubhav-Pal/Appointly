@@ -45,6 +45,7 @@ const PatientForm = () => {
       };
       console.log("user creds to be created: ", userData);
       const user = await createUser(userData);
+      console.log("user: ", { user });
       if (user && user.$id) {
         toast(
           "Patient created successfully. Redirecting to the registration form..."

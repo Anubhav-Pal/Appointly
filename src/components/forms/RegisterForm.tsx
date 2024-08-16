@@ -34,9 +34,9 @@ const RegisterForm: React.FC<Props> = ({ user }) => {
     resolver: zodResolver(PatientFormValidation),
     defaultValues: {
       ...PatientFormDefaultValues,
-      name: "testing",
-      email: "testing@gmail.com",
-      phone: "+91 234323432",
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
     },
   });
 

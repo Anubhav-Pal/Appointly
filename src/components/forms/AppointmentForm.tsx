@@ -18,25 +18,39 @@ import { FormInputType } from "./PatientForm";
 import { Doctors } from "@/constants";
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
-import { createAppointment } from "@/lib/actions/appointment.actions";
+import {
+  createAppointment,
+  updateAppointment,
+} from "@/lib/actions/appointment.actions";
 import { toast } from "sonner";
+import { Appointment } from "../../../types/appwrite.types";
 type Props = {
   type: "create" | "cancel" | "schedule";
   userID: string;
   patientID: string;
+  appointment: Appointment;
+  setOpen: (open: boolean) => void;
 };
-const AppointmentForm: React.FC<Props> = ({ type, userID, patientID }) => {
+const AppointmentForm: React.FC<Props> = ({
+  type,
+  userID,
+  patientID,
+  appointment,
+  setOpen,
+}) => {
   const router = useRouter();
   const [isLoading, setLoading] = useState<boolean>(false);
   const AppointmentFormValidation = getAppointmentSchema(type);
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      primaryPhysician: "",
-      schedule: new Date(),
-      reason: "",
-      note: "",
-      cancellationReason: "",
+      primaryPhysician: appointment ? appointment?.primaryPhysician : "",
+      schedule: appointment
+        ? new Date(appointment?.schedule!)
+        : new Date(Date.now()),
+      reason: appointment ? appointment.reason : "",
+      note: appointment?.note || "",
+      cancellationReason: appointment?.cancellationReason || "",
     },
   });
 
@@ -54,13 +68,15 @@ const AppointmentForm: React.FC<Props> = ({ type, userID, patientID }) => {
   }
 
   async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
+    console.log("submittt");
+
     let status;
     switch (type) {
       case "schedule":
         status = "scheduled";
         break;
       case "cancel":
-        status = "canceled";
+        status = "cancelled";
         break;
       default:
         status = "pending";
@@ -86,6 +102,24 @@ const AppointmentForm: React.FC<Props> = ({ type, userID, patientID }) => {
             `/patients/${userID}/new-appointment/success?appointmentId=${appointment.$id}`
           );
         }
+      } else {
+        const appointmentToUpdate = {
+          userID,
+          appointmentId: appointment?.$id,
+          appointment: {
+            primaryPhysician: values?.primaryPhysician,
+            schedule: new Date(values?.schedule),
+            status: status as Status,
+            cancellationReason: values?.cancellationReason,
+          },
+          type,
+        };
+
+        const updatedAppointment = await updateAppointment(appointmentToUpdate);
+        if (updatedAppointment) {
+          setOpen && setOpen(false);
+          form.reset();
+        }
       }
     } catch (error) {
       console.log("Error during appointment creation: ", error);
@@ -102,10 +136,12 @@ const AppointmentForm: React.FC<Props> = ({ type, userID, patientID }) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6 flex-1"
         >
-          <section className=" space-y-4">
-            <h1 className="header">New Appointment 👋</h1>
-            <p className="text-dark-700">Schedule a new appointment</p>
-          </section>
+          {type === "create" && (
+            <section className=" space-y-4">
+              <h1 className="header">New Appointment 👋</h1>
+              <p className="text-dark-700">Schedule a new appointment</p>
+            </section>
+          )}
 
           {type !== "cancel" && (
             <>
