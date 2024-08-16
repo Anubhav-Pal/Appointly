@@ -10,13 +10,7 @@ import { useState } from "react";
 import { UserFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions/patient.actions";
-// import {
-//   BUCKET_ID,
-//   DATABASE_ID,
-//   ENDPOINT,
-//   PATIENT_COLLECTION_ID,
-//   PROJECT_ID,
-// } from "@/lib/appwrite.config";
+import { toast } from "sonner";
 
 export enum FormInputType {
   INPUT = "input",
@@ -29,11 +23,6 @@ export enum FormInputType {
 }
 
 const PatientForm = () => {
-  // console.log("Bucket ID: ", BUCKET_ID);
-  // console.log("Database ID: ", DATABASE_ID);
-  // console.log("Patient Collection ID: ", PATIENT_COLLECTION_ID);
-  // console.log("Project ID: ", PROJECT_ID);
-  // console.log("Endpoint: ", ENDPOINT);
   const router = useRouter();
   const [isLoading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof UserFormValidation>>({
@@ -57,6 +46,9 @@ const PatientForm = () => {
       console.log("user creds to be created: ", userData);
       const user = await createUser(userData);
       if (user && user.$id) {
+        toast(
+          "Patient created successfully. Redirecting to the registration form..."
+        );
         router.push(`/patients/${user.$id}/register`);
       } else {
         throw new Error("User creation failed, no user ID returned.");

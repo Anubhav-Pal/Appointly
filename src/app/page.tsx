@@ -4,11 +4,13 @@ import logo from "../../public/assets/icons/logo-full.svg";
 import onboarding from "../../public/assets/images/onboarding-img.png";
 import PatientForm from "@/components/forms/PatientForm";
 import Link from "next/link";
+import PassKeyModal from "@/components/PassKeyModal";
 
-const Home = () => {
+const Home = ({ searchParams }: SearchParamProps) => {
+  const isAdmin = searchParams.admin === "true";
   return (
     <div className="flex h-screen max-h-screen">
-      {/* TODO: OTP verification passkey modal */}
+      {isAdmin && <PassKeyModal />}
       <section className="remove-scrollbar container my-auto">
         <div className="sub-container max-w-[496px]">
           <Image

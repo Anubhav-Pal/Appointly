@@ -22,7 +22,8 @@ import {
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
 import FileUploader from "./FileUploader";
- 
+import { toast } from "sonner";
+
 type Props = {
   user: User;
 };
@@ -65,6 +66,9 @@ const RegisterForm: React.FC<Props> = ({ user }) => {
         };
         const patient = await registerPatient(patientData);
         if (patient) {
+          toast(
+            "Patient registered successfully. Redirecting to the appointment form..."
+          );
           router.push(`/patients/${user.$id}/new-appointment`);
         }
       } catch (error) {

@@ -100,3 +100,18 @@ export const registerPatient = async ({
     console.log("error fetching user for patient register: ", error);
   }
 };
+
+export const getPatient = async (userID: string) => {
+  try {
+    // Create new user -> https://appwrite.io/docs/references/1.5.x/server-nodejs/users#create
+    const patients = await databases.listDocuments(
+      NEXT_PUBLIC_DATABASE_ID!,
+      PATIENT_COLLECTION_ID!,
+      [Query.equal("userID", userID)]
+    );
+    return parseStringify(patients.documents[0]);
+  } catch (error: any) {
+    console.error("An error occurred while fetching a user:", error);
+  }
+};
+

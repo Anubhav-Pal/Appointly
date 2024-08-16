@@ -21,7 +21,7 @@ export const PatientFormValidation = z.object({
     .string()
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
   birthDate: z.coerce.date(),
-  gender: z.enum(["male", "female", "other"]),
+  gender: z.enum(["Male", "Female", "Other"]),
   address: z
     .string()
     .min(5, "Address must be at least 5 characters")
@@ -79,10 +79,7 @@ export const PatientFormValidation = z.object({
 export const CreateAppointmentSchema = z.object({
   primaryPhysician: z.string().min(2, "Select at least one doctor"),
   schedule: z.coerce.date(),
-  reason: z
-    .string()
-    .min(2, "Reason must be at least 2 characters")
-    .max(500, "Reason must be at most 500 characters"),
+  reason: z.string(),
   note: z.string().optional(),
   cancellationReason: z.string().optional(),
 });
