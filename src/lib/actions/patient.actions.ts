@@ -27,6 +27,7 @@ import { parseStringify } from "../utils";
 // CREATE APPWRITE USER
 export const createUser = async (user: CreateUserParams) => {
   try {
+    console.log("heyyyyy");
     // Create new user -> https://appwrite.io/docs/references/1.5.x/server-nodejs/users#create
     const newuser = await users.create(
       ID.unique(),
@@ -35,16 +36,23 @@ export const createUser = async (user: CreateUserParams) => {
       undefined,
       user.name
     );
-
+    console.log("new user created: ", newuser);
     return parseStringify(newuser);
   } catch (error: any) {
-    // Check existing user
+    console.log("Error from server actions: ", error);
     if (error && error?.code === 409) {
-      const existingUser = await users.list([
+      const existingUserEmail = await users.list([
         Query.equal("email", [user.email]),
       ]);
-
-      return existingUser.users[0];
+      const existingUserPhone = await users.list([
+        Query.equal("phone", [user.phone]),
+      ]);
+      const existingUser = [
+        ...existingUserEmail.users,
+        ...existingUserPhone.users,
+      ];
+      console.log(existingUser);
+      return existingUser[0];
     }
     console.error("An error occurred while creating a new user:", error);
   }
@@ -114,4 +122,3 @@ export const getPatient = async (userID: string) => {
     console.error("An error occurred while fetching a user:", error);
   }
 };
-

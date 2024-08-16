@@ -1,7 +1,7 @@
 "use server";
 import { ID, Query } from "node-appwrite";
-import { databases } from "../appwrite.config";
-import { parseStringify } from "../utils";
+import { databases, messaging } from "../appwrite.config";
+import { formatDateTime, parseStringify } from "../utils";
 import { Appointment } from "../../../types/appwrite.types";
 import { revalidatePath } from "next/cache";
 const { APPOINTMENT_COLLECTION_ID, NEXT_PUBLIC_DATABASE_ID } = process.env;
@@ -98,9 +98,38 @@ export const updateAppointment = async ({
     );
 
     if (!updateAppointment) throw new Error("Appointment not found");
-    // SMS
+    const smsMessage = `Greetings from CarePulse. ${
+      type === "schedule"
+        ? `Your appointment is confirmed for ${
+            appointment.schedule
+              ? formatDateTime(appointment.schedule).dateTime
+              : "a scheduled time"
+          } with Dr. ${appointment.primaryPhysician}.`
+        : `We regret to inform you that your appointment for ${
+            appointment.schedule
+              ? formatDateTime(appointment.schedule).dateTime
+              : "a scheduled time"
+          } is cancelled. Reason: ${
+            appointment.cancellationReason || "not provided"
+          }.`
+    }`;
+    await sendSMSNotification(userID, smsMessage);
     revalidatePath("/admin");
     return parseStringify(updatedAppointment);
+  } catch (error) {
+    console.log("Error updating appointment: ", error);
+  }
+};
+
+export const sendSMSNotification = async (userID: string, content: string) => {
+  try {
+    const message = await messaging.createSms(
+      ID.unique(),
+      content,
+      [],
+      [userID]
+    );
+    return parseStringify(message);
   } catch (error) {
     console.log("Error updating appointment: ", error);
   }

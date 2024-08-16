@@ -52,6 +52,7 @@ const PatientForm = () => {
         );
         router.push(`/patients/${user.$id}/register`);
       } else {
+        toast("Failed to create a patient. Please try again.");
         throw new Error("User creation failed, no user ID returned.");
       }
     } catch (error) {
